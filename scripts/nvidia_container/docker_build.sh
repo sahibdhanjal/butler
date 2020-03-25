@@ -1,0 +1,1 @@
+docker build container -t butler-nvidia:latest
