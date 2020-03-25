@@ -28,11 +28,12 @@ function docker_nvidia() {
 }
 
 function docker_ros() {
-  WORK_DIR=/home/butler
+  WORK_DIR=/home/workspace/src/butler
   DATA_DIR=/home/data
   sudo docker run --rm \
   --privileged \
-  --6080:80 \
+  -p 6080:80 \
+  -e RESOLUTION=1920x1080 \
   -v $PWD:$WORK_DIR \
   -v ~/data:$DATA_DIR \
   --workdir $WORK_DIR -it butler-ros:latest
@@ -52,5 +53,5 @@ if [ "$#" == 1 ]; then
     echo "$MSG"
   fi
 else
-  echo  "$MSG"
+  echo "$MSG"
 fi
