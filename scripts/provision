@@ -163,7 +163,7 @@ function setup_developer_virtualenv() {
 # install pre-commit and pre-push hooks
 function install_git_hooks() {
   mkdir -p "$HOME_DIR"/.git/hooks/
-  ln -s -f "$HOME_DIR"/githooks/pre-commit "$HOME_DIR"/.git/hooks/
+  cp "$HOME_DIR"/githooks/pre-commit "$HOME_DIR"/.git/hooks/
   echo "${green}Linked pre-commit hooks${end}"
 }
 
