@@ -155,17 +155,16 @@ function setup_developer_virtualenv() {
   echo "${red}Scratching existing virtual environment ..${end}"
   rm -rf venv
   python3 -m virtualenv venv
-  source "$HOME_DIR"/venv/bin/activate
-  python -m pip install -r ${HOME_DIR}/requirements.txt
+  source "$HOME_DIR"/../venv/bin/activate
+  python -m pip install -r ${HOME_DIR}/../requirements.txt
   echo "${green}Installed virtual environment${end}"
 }
 
 # install pre-commit and pre-push hooks
 function install_git_hooks() {
-  rm -rf "$HOME_DIR"/.git/hooks/
   mkdir -p "$HOME_DIR"/.git/hooks/
-  cp "$HOME_DIR"/scripts/pre-commit "$HOME_DIR"/.git/hooks/
-  echo "${green}Installed pre-commit hooks${end}"
+  ln -s -f "$HOME_DIR"/githooks/pre-commit "$HOME_DIR"/.git/hooks/
+  echo "${green}Linked pre-commit hooks${end}"
 }
 
 ##############################################################
@@ -198,7 +197,7 @@ function install() {
 }
 
 # install developer environment (git hooks, virtualenv)
-function developer() {
+function develop() {
   setup_developer_virtualenv
   install_git_hooks
   echo "${red}Please source virtual environment using 'source venv/bin/activate'${end}"

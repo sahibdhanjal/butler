@@ -36,15 +36,17 @@ python-wstool
 RUN rosdep init
 RUN rosdep update
 
-# Creating ROS_WS
-RUN mkdir -p ~/workspace/src
+# Installing OpenCV
+COPY opencv_install.sh $WORKPATH/
+RUN bash $WORKPATH/opencv_install.sh
 
-# Set up bashrc
-RUN /bin/bash -c "echo 'source /opt/ros/melodic/setup.bash' >> /root/.bashrc  && source /root/.bashrc"
-RUN /bin/bash -c "echo 'source /opt/ros/melodic/setup.bash' >> ~/.bashrc  && source ~/.bashrc"
-
-# Set up the ROS workspace
-RUN /bin/bash -c "echo 'export HOME=/home/workspace/src/butler' >> /root/.bashrc && source /root/.bashrc"
-RUN /bin/bash -c "cd /home/workspace/ && \
+# Set up bashrc and workspace
+RUN /bin/bash -c "echo 'source /opt/ros/melodic/setup.bash' >> /root/.bashrc && \
+                  echo 'source /opt/ros/melodic/setup.bash' >> ~/.bashrc && \
+                  source ~/.bashrc && \
+                  mkdir -p ~/workspace/src && \
+                  cd ~/workspace/ && \
                   catkin_make && \
-                  echo 'source ~/workspace/devel/setup.bash' >> ~/.bashrc"
+                  echo 'source ~/workspace/devel/setup.bash' >> ~/.bashrc && \
+                  echo 'source /home/ubuntu/workspace/devel/setup.bash' >> /root/.bashrc && \
+                  echo 'cd /home/ubuntu/workspace/' >> /root/.bashrc"

@@ -1,1 +1,1 @@
-docker build ros_container -t butler-ros:latest
+docker build scripts/ros_container -t butler-ros:latest
