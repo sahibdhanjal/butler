@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Exit on error. Append "|| true" if you expect an error.
+set -o errexit
+# Exit on error inside any functions or subshells.
+set -o errtrace
+# Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
+set -o nounset
+# Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
+set -o pipefail
+# Turn on traces, useful while debugging but commented out by default
+# set -o xtrace
+
+yellow=$'\e[33m'
+blue=$'\e[34m'
+end=$'\e[0m'
+
+
+function docker_nvidia() {
+  WORK_DIR=/home/butler
+  DATA_DIR=/home/data
+  sudo docker run --gpus all \
+  --privileged \
+  --ipc=host \
+  -v $PWD:$WORK_DIR \
+  -v ~/data:$DATA_DIR \
+  --workdir $WORK_DIR -it butler-nvidia:latest
+}
+
+function docker_ros() {
+  WORK_DIR=/home/butler
+  DATA_DIR=/home/data
+  sudo docker run --rm \
+  --privileged \
+  --6080:80 \
+  -v $PWD:$WORK_DIR \
+  -v ~/data:$DATA_DIR \
+  --workdir $WORK_DIR -it butler-ros:latest
+}
+
+MSG="Please use run as follows:
+${yellow}./run nvidia${end}   : run the deep learning ready container
+${yellow}./run ros${end}      : run the ROS/Gazebo ready container
+"
+
+if [ "$#" == 1 ]; then
+  if [ "$1" == "nvidia" ]; then
+    docker_nvidia
+  elif [ "$1" == "ros" ]; then
+    docker_ros
+  else
+    echo "$MSG"
+  fi
+else
+  echo  "$MSG"
+fi

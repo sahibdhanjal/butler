@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 # Exit on error. Append "|| true" if you expect an error.
-set -o errexit
+# set -o errexit
 # Exit on error inside any functions or subshells.
-set -o errtrace
+# set -o errtrace
 # Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
-set -o nounset
+# set -o nounset
 # Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
-set -o pipefail
+# set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
 # set -o xtrace
 
-red=$'\e[1;31m'
-green=$'\e[1;32m'
-yellow=$'\e[1;33m'
+red=$'\e[31m'
+green=$'\e[32m'
+yellow=$'\e[33m'
 end=$'\e[0m'
 
 HOME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -27,7 +27,7 @@ function install_base() {
   echo "${yellow}Installing Base Libraries ..${end}"
   sudo apt-get install -y build-essential cmake curl
   sudo apt-get install -y qt5-default libvtk6-dev 
-  sudo apt-get install -y zlib1g-dev libjpeg-dev libwebp-dev libpng-dev libtiff5-dev libjasper-dev libopenexr-dev libgdal-dev
+  sudo apt-get install -y zlib1g-dev libjpeg-dev libwebp-dev libpng-dev libtiff5-dev libopenexr-dev libgdal-dev
   sudo apt-get install -y libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev yasm libopencore-amrnb-dev libopencore-amrwb-dev libv4l-dev libxine2-dev
   sudo apt-get install -y libtbb-dev libeigen3-dev
   sudo apt-get install -y ant default-jdk
@@ -135,11 +135,12 @@ function install_nvidia_docker() {
 # builds the docker container ready for deep learning
 function build_deep_learning_container() {
   echo "${yellow}Building Nvidia Docker Container${end}"
+  install_nvidia_docker
   sh "$HOME_DIR"/nvidia_container/docker_build.sh
 }
 
 # builds the docker container ready for ros/gazebo
-function build_deep_learning_container() {
+function build_ros_gazebo_container() {
   echo "${yellow}Building ROS/Gazebo Container${end}"
   sh "$HOME_DIR"/ros_container/docker_build.sh
 }
@@ -196,12 +197,6 @@ function install() {
   echo "${red}Please ensure that docker is added to the sudo usergroup${end}"
 }
 
-# build nvidia docker image and containers
-function build() {
-  install_nvidia_docker
-  build_container
-}
-
 # install developer environment (git hooks, virtualenv)
 function developer() {
   setup_developer_virtualenv
@@ -212,30 +207,35 @@ function developer() {
 ##############################################################
 # Main Function
 ##############################################################
+MSG="Please use provision as follows:
+${yellow}./provision install${end}      : installs the necessary drivers/software for building containers
+${yellow}./provision build nvidia${end} : builds the base docker container for deep learning using nvidia-docker
+${yellow}./provision build ros${end}    : builds the base docker container for ros/gazebo development
+${yellow}./provision develop${end}      : creates and sets up a virtual environment and python/c++ linters for development
+"
 
-# orchestrates provisioning
-function main() {
-  MSG="
-  Please use provision as follows:
-  ${yellow}./provision install${end} :- installs the necessary drivers/software for building containers
-  ${yellow}./provision build${end} :- builds the base docker container (derived from nvidia container toolkit)
-  ${yellow}./provision develop${end} :- creates and sets up a virtual environment and python/c++ linters for development
-  "
-
-
-  if [ "$#" == 1 ]; then
-    if [ "$1" == "install" ]; then
-      install
-    elif [ "$1" == "build" ]; then
-      build
-    elif [ "$1" == "develop" ]; then
-      developer
+if [ "$#" == 1 ]; then
+  if [ "$1" == "install" ]; then
+    install
+  elif [ "$1" == "build" ]; then
+    echo "${yellow}Please use either 'build nvidia' or 'build ros' depending on the container you want to build${end}"
+  elif [ "$1" == "develop" ]; then
+    develop
+  else
+    echo "$MSG"
+  fi
+elif [ "$#" == 2 ]; then
+  if [ "$1" == "build" ]; then
+    if [ "$2" == "nvidia" ]; then
+      build_deep_learning_container
+    elif [ "$2" == "ros" ]; then
+      build_ros_gazebo_container
     else
-      echo "$MSG"
+      echo "${yellow}Please use either `build nvidia` or `build ros` depending on the container you want to build${end}"
     fi
   else
-    echo  "$MSG"
+    echo "$MSG"
   fi
-}
-
-main
+else
+  echo  "$MSG"
+fi

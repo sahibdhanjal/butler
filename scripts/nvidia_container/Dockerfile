@@ -4,6 +4,7 @@
 # FROM nvcr.io/nvidia/tensorrt:19.10-py3
 
 FROM nvcr.io/nvidia/pytorch:19.10-py3
+LABEL maintainer "dhanjalsahib@gmail.com"
 
 ARG WORKPATH=/home
 WORKDIR $WORKPATH

@@ -1,1 +1,1 @@
-docker build container -t butler-nvidia:latest
+docker build nvidia_container -t butler-nvidia:latest
