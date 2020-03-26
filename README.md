@@ -1,5 +1,4 @@
-<p align="center"><img src="docs/img/logo.png" width=100%></p>
-
+![Image](docs/img/logo.png)
 
 # Butler : A framework for Visual/Sparse-SLAM based Mobile Robots
 [![Buildkite CI Status](https://app.wercker.com/status/8b02a43f48216385658bb3857aae5fd8/s/master)](https://travis-ci.org/xdspacelab/openvslam)
