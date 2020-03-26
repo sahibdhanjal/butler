@@ -1,0 +1,1 @@
+docker build scripts/nvidia_container -t butler-nvidia:latest
