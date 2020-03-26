@@ -1,0 +1,1 @@
+docker build scripts/ros_container -t butler-ros:latest

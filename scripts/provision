@@ -1,0 +1,241 @@
+#!/usr/bin/env bash
+
+# Exit on error. Append "|| true" if you expect an error.
+# set -o errexit
+# Exit on error inside any functions or subshells.
+# set -o errtrace
+# Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
+# set -o nounset
+# Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
+# set -o pipefail
+# Turn on traces, useful while debugging but commented out by default
+# set -o xtrace
+
+red=$'\e[31m'
+green=$'\e[32m'
+yellow=$'\e[33m'
+end=$'\e[0m'
+
+HOME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+##############################################################
+# Functions to install base libraries on your local machine
+##############################################################
+
+# Install base libraries
+function install_base() {
+  echo "${yellow}Installing Base Libraries ..${end}"
+  sudo apt-get install -y build-essential cmake curl
+  sudo apt-get install -y qt5-default libvtk6-dev 
+  sudo apt-get install -y zlib1g-dev libjpeg-dev libwebp-dev libpng-dev libtiff5-dev libopenexr-dev libgdal-dev
+  sudo apt-get install -y libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev yasm libopencore-amrnb-dev libopencore-amrwb-dev libv4l-dev libxine2-dev
+  sudo apt-get install -y libtbb-dev libeigen3-dev
+  sudo apt-get install -y ant default-jdk
+  sudo apt-get install -y doxygen unzip wget
+  sudo apt-get install -y python3-dev python3-pip clang-format-6.0
+}
+
+# Check if docker is present else install
+function install_docker() {
+  if hash docker 2>/dev/null; then
+    echo "${green}docker already installed.${end}"
+  else
+    echo "${yellow}Installing docker ..${end}"
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sh get-docker.sh
+
+    echo "${yellow}Adding docker to sudo user group${end}"
+    sudo usermod -aG docker $USER
+  fi
+}
+
+# Check if nvidia gpu is present. if present, install driver version 440
+function install_nvidia_driver() {
+  NVIDIA_VERSION="440"
+  if [ -d "/proc/driver/nvidia/gpus" ] ; then
+    NVIDIA_VERSION_TEST=`modinfo nvidia 2> /dev/null | grep ${NVIDIA_VERSION} || true`
+    if [ -n "${NVIDIA_VERSION_TEST:-}" ]; then
+      echo "${green}Nvidia Driver 440 already installed${end}"
+      return 0
+    else
+      echo "${yellow}Installing Nvidia Driver 440${end}"
+      sudo apt remove --purge nvidia*
+      sudo add-apt-repository -y ppa:graphics-drivers/ppa
+      sudo apt-get update
+      sudo apt-get install -y nvidia-driver-440
+      echo "${red}Please restart your computer and ensure that the Nvidia driver version is 440${end}"
+    fi
+  else
+    echo "${red}Error: No NVIDIA GPU found${end}"
+    exit 1
+  fi
+}
+
+# Check if opencv is present. If not, install
+function install_opencv() {
+  OPENCV_VERSION='4.1.2'
+
+  cd /tmp/
+  # Clone Contrib Files
+  git clone https://github.com/opencv/opencv_contrib.git
+
+  # Install Library
+  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+  unzip ${OPENCV_VERSION}.zip
+  rm ${OPENCV_VERSION}.zip
+  mv opencv-${OPENCV_VERSION} OpenCV
+  cd OpenCV
+  mkdir build
+  cd build
+
+  cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D INSTALL_PYTHON_EXAMPLES=OFF \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D OPENCV_ENABLE_NONFREE=ON \
+        -D BUILD_EXAMPLES=OFF \
+        -D BUILD_opencv_python=OFF \
+        -D BUILD_opencv_cudacodec=OFF \
+        -D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_contrib/modules \
+        -D WITH_QT=OFF \
+        -D WITH_OPENGL=OFF \
+        -D FORCE_VTK=OFF \
+        -D WITH_TBB=OFF \
+        -D WITH_GDAL=ON \
+        -D WITH_XINE=OFF \
+        -D WITH_CUDA=OFF \
+        -D ENABLE_FAST_MATH=1 \
+        -D CUDA_FAST_MATH=0 \
+        -D OPENCV_GENERATE_PKGCONFIG=ON \
+        -D WITH_CUBLAS=0 \
+        -D ENABLE_PRECOMPILED_HEADERS=OFF ..
+  make -j8
+  sudo make install
+  sudo ldconfig
+}
+
+# Check if nvidia docker is already present, else installs
+function install_nvidia_docker() {
+  if hash nvidia-container-cli 2>/dev/null; then
+    echo "${green}nvidia-docker already installed${end}"
+  else 
+    echo "${yellow}Installing NVIDIA Docker from https://github.com/NVIDIA/nvidia-docker${end}"
+    distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+    curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+    curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+    sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+    sudo systemctl restart docker
+  fi
+}
+
+##############################################################
+# Functions to build containers ready for development
+##############################################################
+
+# builds the docker container ready for deep learning
+function build_deep_learning_container() {
+  echo "${yellow}Building Nvidia Docker Container${end}"
+  install_nvidia_docker
+  sh "$HOME_DIR"/nvidia_container/docker_build.sh
+}
+
+# builds the docker container ready for ros/gazebo
+function build_ros_gazebo_container() {
+  echo "${yellow}Building ROS/Gazebo Container${end}"
+  sh "$HOME_DIR"/ros_container/docker_build.sh
+}
+
+##############################################################
+# Functions to setup your local development environment
+##############################################################
+
+# setup the development environment
+function setup_developer_virtualenv() {
+  python3 -m pip install virtualenv
+  echo "${red}Scratching existing virtual environment ..${end}"
+  rm -rf venv
+  python3 -m virtualenv venv
+  source "$HOME_DIR"/../venv/bin/activate
+  python -m pip install -r ${HOME_DIR}/../requirements.txt
+  echo "${green}Installed virtual environment${end}"
+}
+
+# install pre-commit and pre-push hooks
+function install_git_hooks() {
+  rm -rf "$HOME_DIR"/../.git/hooks/
+  mkdir -p "$HOME_DIR"/../.git/hooks/
+  ln -s -f "$HOME_DIR"/../githooks/pre-commit "$HOME_DIR"/../.git/hooks/
+  echo "${green}Linked pre-commit hooks${end}"
+}
+
+##############################################################
+# Functions utilizing above functions and called by main
+##############################################################
+# install basics and drivers
+function install() {
+  install_base
+  install_docker
+  
+  while true; do
+    read -p "${yellow}Do you wish to install OpenCV (Y/N)? ${end}" yn
+    case $yn in
+        [Yy]* ) install_opencv;break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer Y(y) or N(n).";;
+    esac
+  done
+
+  while true; do
+    read -p "${yellow}Do you wish to install NVidia Driver 440 (Y/N)? ${end}" yn
+    case $yn in
+        [Yy]* ) install_nvidia_driver;break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer Y(y) or N(n).";;
+    esac
+  done
+
+  echo "${red}Please ensure that docker is added to the sudo usergroup${end}"
+}
+
+# install developer environment (git hooks, virtualenv)
+function develop() {
+  setup_developer_virtualenv
+  install_git_hooks
+  echo "${red}Please source virtual environment using 'source venv/bin/activate'${end}"
+}
+
+##############################################################
+# Main Function
+##############################################################
+MSG="Please use provision as follows:
+${yellow}./provision install${end}      : installs the necessary drivers/software for building containers
+${yellow}./provision build nvidia${end} : builds the base docker container for deep learning using nvidia-docker
+${yellow}./provision build ros${end}    : builds the base docker container for ros/gazebo development
+${yellow}./provision develop${end}      : creates and sets up a virtual environment and python/c++ linters for development
+"
+
+if [ "$#" == 1 ]; then
+  if [ "$1" == "install" ]; then
+    install
+  elif [ "$1" == "build" ]; then
+    echo "${yellow}Please use either 'build nvidia' or 'build ros' depending on the container you want to build${end}"
+  elif [ "$1" == "develop" ]; then
+    develop
+  else
+    echo "$MSG"
+  fi
+elif [ "$#" == 2 ]; then
+  if [ "$1" == "build" ]; then
+    if [ "$2" == "nvidia" ]; then
+      build_deep_learning_container
+    elif [ "$2" == "ros" ]; then
+      build_ros_gazebo_container
+    else
+      echo "${yellow}Please use either `build nvidia` or `build ros` depending on the container you want to build${end}"
+    fi
+  else
+    echo "$MSG"
+  fi
+else
+  echo  "$MSG"
+fi
