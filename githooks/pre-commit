@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+from os.path import exists
+from os.path import splitext
+from shlex import split
+from subprocess import PIPE
+from subprocess import Popen
+from subprocess import STDOUT
+from sys import version_info
+
+# we try our best, but the shebang of this script is difficult to determine:
+# - macos doesn't ship with python3
+# - windows executables are almost always `python.exe`
+# therefore we continue to support python2 for this small script
+if version_info < (3, 3):
+    from distutils.spawn import find_executable as which
+else:
+    from shutil import which
+
+
+def execute_command(input_cmd, print_status=False):
+    """execute a given input command"""
+    output = []
+    cmd = split(input_cmd)
+    process = Popen(cmd, stdout=PIPE, stderr=STDOUT)
+    while True:
+        line = process.stdout.readline().decode('utf-8')
+        line = line.strip()
+        if line == '' and process.poll() is not None:
+            break
+        if print_status:
+            print(line)
+        output.append(line)
+    process.stdout.close()
+    return_code = process.wait()
+    if return_code != 0:
+        raise SystemExit('Command failed: \n', input_cmd)
+    return output
+
+def get_changed_files():
+    """List all files changed from previous commit"""
+    # modified/ newly added/ renamed are monitored for linting
+    # deleted files do not need to be monitored for linting
+    changed_files = []
+
+    for item in execute_command('git status --short'):
+        changes = item.split()
+        # this is of format => M/A filename
+        if changes[0] in ['M', 'A'] and exists(changes[1]):
+            changed_files.append(changes[1])
+        # this is of format => R filename1 -> filename2
+        if changes[0] == 'R' and exists(changes[3]):
+            changed_files.append(changes[3])
+    return changed_files
+
+
+def check_if_branch_is_master():
+    """Make sure you're not pushing to master"""
+    output = execute_command('git rev-parse --abbrev-ref HEAD')
+    assert len(output) == 1
+    if output[0] == 'master':
+        SystemExit("You can't commit directly to the master branch")
+    return True
+
+
+def run_python_linter(files):
+    """run pre-commit python linter on given files"""
+    if which('pre-commit'):
+        cmd = 'pre-commit run --files '
+    else:
+        raise SystemExit('`pre-commit` not found.  Did you forget to activate your virtualenv?')
+    cmd += ' '.join(file for file in files)
+    execute_command(cmd, print_status=True)
+
+
+def run_clang_format(files):
+    """run clang format on given files and then add them to the git index"""
+    if which('clang-format-6.0'):
+        cmd = 'clang-format-6.0 -i -style=file '
+    else:
+        raise SystemExit('`clang-format` not found. Please install it using `sudo apt-get install clang-format-6.0')
+    cmd += ' '.join(file for file in files)
+    execute_command(cmd, print_status=True)
+    # add formatted files to git index
+    execute_command('git add ' + ' '.join(file for file in files))
+
+
+def run_tests():
+    """run the tests for firefly"""
+    pass
+
+
+def main():
+    """main execution function"""
+    python_extensions = ['.py', '.yaml', '.txt']
+    cpp_extensions = ['.cc', '.cpp', '.h', '.cu', '.hpp', '.C',
+                      '.CPP', '.cxx', '.cp', '.c++', '.proto']
+
+    # disable pushes to master
+    check_if_branch_is_master()
+    # list all files changed from previous commit
+    changed_files = get_changed_files()
+    if not changed_files:
+        return
+
+    python_files = []
+    clang_files = []
+    # segregate files to be linted by python and clang
+    for filename in changed_files:
+        _, ext = splitext(filename)
+        if ext in python_extensions:
+            python_files.append(filename)
+        elif ext in cpp_extensions:
+            clang_files.append(filename)
+    if clang_files:
+        run_clang_format(clang_files)
+    if python_files:
+        run_python_linter(python_files)
+
+    run_tests()
+
+
+if __name__ == '__main__':
+    main()
