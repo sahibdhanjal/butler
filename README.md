@@ -41,5 +41,9 @@ Run the **nvidia container** using `. run nvidia`, which opens up a terminal ins
 We follow the [Google Coding Standard](https://google.github.io/styleguide/cppguide.html) for C/C++/Protobuf and [PEP8](https://www.python.org/dev/peps/pep-0008/) for Python development. Linters are already in place to ensure developer efficiency. To setup your environment, please run - `. scripts/provision develop`
 
 ## Support
-
 Having trouble with the repository? Check out our [documentation](https://sahibdhanjal.github.io/butler/) or [raise an issue](https://github.com/sahibdhanjal/butler/issues) and we’ll help you sort it out.
+
+## References
+* [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
+* [ubuntu-vnc-desktop](https://hub.docker.com/r/dorowu/ubuntu-desktop-lxde-vnc)
+* [ROS Melodic](http://wiki.ros.org/melodic)
