@@ -5,6 +5,7 @@ LABEL maintainer "dhanjalsahib@gmail.com"
 RUN apt-get update && apt-get install -y \
 apt-utils \
 dirmngr \
+curl \
 wget \
 git \
 nano \
@@ -13,7 +14,11 @@ python-dev \
 python-pip \
 python3-dev \
 python3-pip \
-terminator
+terminator \
+libeigen3-dev \
+libgtest-dev \
+libgoogle-glog-dev \
+libboost-dev
 
 RUN pip install -U catkin_tools
 
@@ -31,7 +36,8 @@ ros-melodic-desktop-full \
 python-rosdep \
 python-rosinstall \
 python-rosinstall-generator \
-python-wstool
+python-wstool \
+cmake
 
 RUN rosdep init
 RUN rosdep update
@@ -39,6 +45,12 @@ RUN rosdep update
 # Installing OpenCV
 COPY opencv_install.sh $WORKPATH/
 RUN bash $WORKPATH/opencv_install.sh
+
+RUN /bin/bash -c "cd /usr/src/gtest && \
+                  cmake CMakeLists.txt && \
+                  make && \
+                  cp *.a /usr/lib"
+
 
 # Set up bashrc and workspace
 RUN /bin/bash -c "echo 'source /opt/ros/melodic/setup.bash' >> /root/.bashrc && \

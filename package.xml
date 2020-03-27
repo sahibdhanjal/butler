@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>butler</name>
+  <version>0.0.1</version>
+  <description>Butler : A framework for Visual/Sparse-SLAM based Mobile Robots</description>
+  <maintainer email="dhanjalsahib@gmail.com">Sahib Dhanjal</maintainer>
+  <license>GPLv3</license>
+  <url type="website">https://sahibdhanjal.github.io/butler/</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>cv_bridge</depend>
+  <depend>geometry_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>nav_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>tf2</depend>
+</package>
