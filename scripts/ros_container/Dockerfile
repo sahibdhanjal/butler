@@ -17,6 +17,7 @@ python3-pip \
 terminator \
 libeigen3-dev \
 libgtest-dev \
+libgoogle-glog-dev \
 libboost-dev
 
 RUN pip install -U catkin_tools
