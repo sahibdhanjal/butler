@@ -3,6 +3,7 @@
   <name>butler</name>
   <version>0.0.1</version>
   <description>Butler : A framework for Visual/Sparse-SLAM based Mobile Robots</description>
+  <author email="dhanjalsahib@gmail.com">Sahib Dhanjal</author>
   <maintainer email="dhanjalsahib@gmail.com">Sahib Dhanjal</maintainer>
   <license>GPLv3</license>
   <url type="website">https://sahibdhanjal.github.io/butler/</url>
