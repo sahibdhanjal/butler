@@ -1,8 +1,10 @@
 flake8
+mock
 mypy
 mypy-extensions
 pip
 pre-commit
+pylint
 setuptools
 virtualenv
 yapf

@@ -84,11 +84,6 @@ def run_clang_format(files):
     execute_command('git add ' + ' '.join(file for file in files))
 
 
-def run_tests():
-    """run the tests for firefly"""
-    pass
-
-
 def main():
     """main execution function"""
     python_extensions = ['.py', '.yaml', '.txt']
@@ -115,9 +110,6 @@ def main():
         run_clang_format(clang_files)
     if python_files:
         run_python_linter(python_files)
-
-    run_tests()
-
 
 if __name__ == '__main__':
     main()

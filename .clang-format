@@ -4,4 +4,4 @@ Language: Cpp
 ColumnLimit: 100
 ---
 Language: Proto
-ColumnLimit: 100
+ColumnLimit: 80
