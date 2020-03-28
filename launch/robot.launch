@@ -17,7 +17,7 @@
         <arg name="rviz" value="$(arg rviz)"/>
     </include>
 
-    <include file="$(find butler)/robots/jackal_description/launch/view_model.launch" if="$(eval arg('robot')=='jackal')">
+    <include file="$(find butler)/robots/jackal_description/launch/view_jackal.launch" if="$(eval arg('robot')=='jackal')">
         <arg name="gazebo" value="$(arg gazebo)"/>
         <arg name="rviz" value="$(arg rviz)"/>
     </include>
