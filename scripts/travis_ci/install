@@ -43,8 +43,3 @@ ros-melodic-velodyne
 
 sudo rosdep init
 rosdep update
-
-cd /usr/src/gtest
-cmake CMakeLists.txt
-make
-cp *.a /usr/lib
