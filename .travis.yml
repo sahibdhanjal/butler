@@ -1,0 +1,5 @@
+language: python
+install: ./scripts/travis_ci/install
+script:
+- ./scripts/provision build ros
+- ./scripts/provision build nvidia

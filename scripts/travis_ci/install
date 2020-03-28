@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+# Exit on error. Append "|| true" if you expect an error.
+set -o errexit
+# Exit on error inside any functions or subshells.
+set -o errtrace
+# Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
+set -o nounset
+# Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
+set -o pipefail
+# Turn on traces, useful while debugging but commented out by default
+# set -o xtrace
+
+red=$'\e[31m'
+green=$'\e[32m'
+yellow=$'\e[33m'
+end=$'\e[0m'
+
+# Install base libraries
+function install_base() {
+  echo "${yellow}Installing Base Libraries ..${end}"
+  sudo apt-get install -y build-essential cmake curl
+  sudo apt-get install -y qt5-default libvtk6-dev 
+  sudo apt-get install -y zlib1g-dev libjpeg-dev libwebp-dev libpng-dev libtiff5-dev libopenexr-dev libgdal-dev
+  sudo apt-get install -y libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev yasm libopencore-amrnb-dev libopencore-amrwb-dev libv4l-dev libxine2-dev
+  sudo apt-get install -y libtbb-dev libeigen3-dev
+  sudo apt-get install -y ant default-jdk
+  sudo apt-get install -y doxygen unzip wget
+  sudo apt-get install -y python3-dev python3-pip clang-format-6.0
+}
+
+# Check if docker is present else install
+function install_docker() {
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sh get-docker.sh
+  sudo usermod -aG docker $USER
+}
+
+# Check if nvidia gpu is present. if present, install driver version 440
+function install_nvidia_driver() {
+  sudo apt remove --purge nvidia*
+  sudo add-apt-repository -y ppa:graphics-drivers/ppa
+  sudo apt-get update
+  sudo apt-get install -y nvidia-driver-440
+}
+
+# Check if opencv is present. If not, install
+function install_opencv() {
+  OPENCV_VERSION='4.1.2'
+
+  cd /tmp/
+  # Clone Contrib Files
+  git clone https://github.com/opencv/opencv_contrib.git
+
+  # Install Library
+  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+  unzip ${OPENCV_VERSION}.zip
+  rm ${OPENCV_VERSION}.zip
+  mv opencv-${OPENCV_VERSION} OpenCV
+  cd OpenCV
+  mkdir build
+  cd build
+
+  cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D INSTALL_PYTHON_EXAMPLES=OFF \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D OPENCV_ENABLE_NONFREE=ON \
+        -D BUILD_EXAMPLES=OFF \
+        -D BUILD_opencv_python=OFF \
+        -D BUILD_opencv_cudacodec=OFF \
+        -D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_contrib/modules \
+        -D WITH_QT=OFF \
+        -D WITH_OPENGL=OFF \
+        -D FORCE_VTK=OFF \
+        -D WITH_TBB=OFF \
+        -D WITH_GDAL=ON \
+        -D WITH_XINE=OFF \
+        -D WITH_CUDA=OFF \
+        -D ENABLE_FAST_MATH=1 \
+        -D CUDA_FAST_MATH=0 \
+        -D OPENCV_GENERATE_PKGCONFIG=ON \
+        -D WITH_CUBLAS=0 \
+        -D ENABLE_PRECOMPILED_HEADERS=OFF ..
+  make -j8
+  sudo make install
+  sudo ldconfig
+}
+
+# Check if nvidia docker is already present, else installs
+function install_nvidia_docker() {
+  echo "${yellow}Installing NVIDIA Docker from https://github.com/NVIDIA/nvidia-docker${end}"
+  distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+  curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+  curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+  sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+  sudo systemctl restart docker
+}
+
+install_base
+install_docker
+install_nvidia_docker
