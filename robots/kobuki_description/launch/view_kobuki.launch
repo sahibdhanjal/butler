@@ -1,0 +1,26 @@
+<!--
+  Useful for debugging or just viewing the kobuki model/urdf/transform. 
+ -->
+<launch>
+  <arg name="gazebo" default="false" />
+  <arg name="rviz" default="false" />
+  <arg name="urdf" default="$(find xacro)/xacro --inorder '$(find butler)/robots/kobuki_description/urdf/kobuki_standalone.urdf.xacro'"/>
+
+  <!-- give robot description and launch joint/state publishers -->
+  <param name="robot_description" command="$(arg urdf)"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+    <param name="publish_frequency" type="double" value="5.0"/>
+  </node>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="false"/>
+  </node>
+
+  <!-- launch gazebo/rviz if requested -->
+  <node name="rviz" pkg="rviz" type="rviz" 
+        args="-d $(find butler)/robots/kobuki_description/rviz/model.rviz"
+        if="$(eval arg('rviz'))"/>
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_kobuki"
+        args="-x 0.0 -y 0.0 -z 1.5 -unpause -urdf -param robot_description -model kobuki" 
+        respawn="false" 
+        if="$(eval arg('gazebo'))"/>
+</launch>

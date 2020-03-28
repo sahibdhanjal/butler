@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o errtrace
+
+yellow=$'\e[33m'
+blue=$'\e[34m'
+end=$'\e[0m'
+
+
+function docker_nvidia() {
+  WORK_DIR=/home/butler
+  DATA_DIR=/home/data
+  sudo docker run --gpus all \
+  --privileged \
+  --ipc=host \
+  -v $PWD:$WORK_DIR \
+  -v ~/data:$DATA_DIR \
+  --workdir $WORK_DIR -it butler-nvidia:latest
+}
+
+function docker_ros() {
+  WORK_DIR=/home/ubuntu/workspace/src/butler
+  DATA_DIR=/home/data
+  sudo docker run --rm \
+  -p 6080:80 \
+  -e RESOLUTION=1920x1080 \
+  -v $PWD:$WORK_DIR \
+  -v ~/data:$DATA_DIR \
+  --workdir $WORK_DIR -it butler-ros:latest
+}
+
+MSG="Please use run as follows:
+${yellow}./run nvidia${end}   : run the deep learning ready container
+${yellow}./run ros${end}      : run the ROS/Gazebo ready container
+"
+
+if [ "$#" == 1 ]; then
+  if [ "$1" == "nvidia" ]; then
+    docker_nvidia
+  elif [ "$1" == "ros" ]; then
+    docker_ros
+  else
+    echo "$MSG"
+  fi
+else
+  echo "$MSG"
+fi

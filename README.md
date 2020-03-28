@@ -1,37 +1,39 @@
-## Welcome to GitHub Pages
+![Image](docs/img/logo.png)
 
-You can use the [editor on GitHub](https://github.com/sahibdhanjal/butler/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+# Butler : A framework for Visual/Sparse-SLAM based Mobile Robots
+[![Buildkite CI Status](https://app.wercker.com/status/8b02a43f48216385658bb3857aae5fd8/s/master)](https://travis-ci.org/xdspacelab/openvslam)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/shinsumicco/openvslam.svg)](https://hub.docker.com/r/shinsumicco/openvslam)
+[![License](https://img.shields.io/badge/license-GPLv3-orange)](https://opensource.org/licenses/GPL-3.0)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Overview
+Butler is a platform independent framework for mobile robotics, deep learning and simulated algorithms for small UGVs and differential drive robots (such as [Kobuki](http://kobuki.yujinrobot.com/about2/) and [Jackal](https://clearpathrobotics.com/jackal-small-unmanned-ground-vehicle/)). The repository supports an array of algorithms aiming at mapping, localization, perception, and control in a variety of simulated environments.
 
-### Markdown
+## Requirements
+The minimum requirements to get started with Butler are:
+* **OS** : Ubuntu 16.04+, Windows 7+, Mac OS 
+* **Browser** : Google Chrome, Firefox
+* **Docker**
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Deep Learning Dependencies (_optional_):
+* **Nvidia GPU**
+* **Nvidia Driver 418+**
 
-```markdown
-Syntax highlighted code block
+## Installation
+Please see the [installation](docs/Installation.md) chapter in the [documentation](https://sahibdhanjal.github.io/butler/) for installing and running the environments.
 
-# Header 1
-## Header 2
-### Header 3
+## Quick Run
+For a quick test run of butler, you can follow these steps after building the ROS/Gazebo container as listed in [installation](docs/Installation.md). Once you've built the container, run it using `. run ros`. This will start a VNC session in your browser at [localhost:6080](http://localhost:6080/). Open a new terminal in that VNC session `Home > System Tools > LX Terminal` and type in `roslaunch butler robot.launch` and voila, you should be able to see the small Kobuki robot in it. For a more detailed run through, please see the [tutorial](docs/Tutorial.md) chapter in the [documentation](https://sahibdhanjal.github.io/butler/).
 
-- Bulleted
-- List
+## Contribution Guide
+Please see the [contribution](docs/Contribution.md) chapter in the [documentation](https://sahibdhanjal.github.io/butler/) for a basic guide to develop and contribute to this repository.
 
-1. Numbered
-2. List
+## Support
+Having trouble with the repository? Check out our [documentation](https://sahibdhanjal.github.io/butler/) or [raise an issue](https://github.com/sahibdhanjal/butler/issues) and we’ll help you sort it out.
 
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/sahibdhanjal/butler/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## References
+* [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
+* [ubuntu-vnc-desktop](https://hub.docker.com/r/dorowu/ubuntu-desktop-lxde-vnc)
+* [ROS Melodic](http://wiki.ros.org/melodic)
+* [ROS Jackal](http://wiki.ros.org/jackal_description)
+* [ROS Kobuki](https://github.com/yujinrobot/kobuki)
+* [ROS AION R1](https://github.com/aionrobotics)
