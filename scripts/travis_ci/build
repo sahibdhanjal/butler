@@ -1,5 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+# initialize message colors
+red=$'\e[31m'
+green=$'\e[32m'
+yellow=$'\e[33m'
+end=$'\e[0m'
+
+echo "${yellow}Moving ./butler to ../src/butler${end}"
 cd ..
 mkdir src
 mv butler src
 source /opt/ros/melodic/setup.bash
+
+echo "${red}Building butler${end}"
 catkin_make
+
+echo "${green}Butler Build Successful!${end}"

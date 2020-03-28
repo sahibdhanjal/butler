@@ -1,29 +1,42 @@
 #!/usr/bin/env bash
+set -e
 
-# Exit on error. Append "|| true" if you expect an error.
-set -o errexit
-# Exit on error inside any functions or subshells.
-set -o errtrace
-# Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
-set -o nounset
-# Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
-set -o pipefail
-# Turn on traces, useful while debugging but commented out by default
-# set -o xtrace
+# initialize message colors
+red=$'\e[31m'
+green=$'\e[32m'
+yellow=$'\e[33m'
+end=$'\e[0m'
 
-sudo apt-get update
-sudo apt-get install -y curl wget unzip cmake make \
+# install base libraries
+echo "${red}Installing base libraries${end}"
+sudo apt-get update && sudo apt-get install -y \
+curl \
+wget \
+unzip \
+cmake \
+make \
 libeigen3-dev \
 libgoogle-glog-dev \
 libboost-dev \
 libyaml-cpp-dev \
-libopencv-dev
+libopencv-dev \
+libgtest-dev
 
+# build gtest
+echo "${red}Building GTest${end}"
+cd /usr/src/gtest
+sudo cmake CMakeLists.txt
+sudo make
+sudo cp *.a /usr/lib
+
+# setup ROS keys and install
+echo "${red}Setting up ROS Keys${end}"
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 sudo apt-get update 
 
-# Installing ROS
+# Install ROS
+echo "${red}Installing ROS Melodic${end}"
 sudo apt-get install -f -y \
 python-catkin-pkg-modules \
 python-rosdistro-modules \
@@ -39,8 +52,4 @@ ros-melodic-velodyne
 sudo rosdep init
 rosdep update
 
-sudo apt-get install cmake libgtest-dev
-cd /usr/src/gtest
-sudo cmake CMakeLists.txt
-sudo make
-sudo cp *.a /usr/lib
+echo "${green}Environment Build Successful!${end}"
