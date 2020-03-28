@@ -28,7 +28,7 @@ sudo apt-get install -f -y \
 python-catkin-pkg-modules \
 python-rosdistro-modules \
 python-rospkg-modules \
-ros-melodic-desktop-base \
+ros-melodic-desktop \
 python-rosdep \
 python-rosinstall \
 python-rosinstall-generator \
