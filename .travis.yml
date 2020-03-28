@@ -1,5 +1,5 @@
-language: python
+dist: bionic
+language: c++
 install: ./scripts/travis_ci/install
 script:
-- ./scripts/provision build ros
-- ./scripts/provision build nvidia
+- ./scripts/travis_ci/build
