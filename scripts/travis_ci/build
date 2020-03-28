@@ -1,4 +1,4 @@
-mkdir -p build
-cd build
-cmake ..
-make
+cd ..
+mkdir src
+mv butler src
+catkin_make
