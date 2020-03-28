@@ -11,6 +11,7 @@ set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
 # set -o xtrace
 
+sudo apt-get update
 sudo apt-get install -y curl wget unzip cmake apt-utils git make cmake
 
 curl -fsSL https://get.docker.com -o get-docker.sh
