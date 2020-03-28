@@ -1,7 +1,7 @@
 ![Image](docs/img/logo.png)
 
 # Butler : A framework for Visual/Sparse-SLAM based Mobile Robots
-[![Buildkite CI Status](https://app.wercker.com/status/8b02a43f48216385658bb3857aae5fd8/s/master)](https://travis-ci.org/xdspacelab/openvslam)
+[![Travis CI Status](https://travis-ci.com/sahibdhanjal/butler.svg?token=sv3o6a8nfkBezqZhmnpy&branch=master)](https://travis-ci.com/sahibdhanjal/butler)
 [![Docker Build Status](https://img.shields.io/docker/cloud/build/shinsumicco/openvslam.svg)](https://hub.docker.com/r/shinsumicco/openvslam)
 [![License](https://img.shields.io/badge/license-GPLv3-orange)](https://opensource.org/licenses/GPL-3.0)
 
