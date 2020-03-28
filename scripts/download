@@ -1,0 +1,282 @@
+#!/usr/bin/env bash
+
+# Exit on error. Append "|| true" if you expect an error.
+set -o errexit
+# Exit on error inside any functions or subshells.
+set -o errtrace
+# Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
+set -o nounset
+# Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
+set -o pipefail
+# Turn on traces, useful while debugging but commented out by default
+# set -o xtrace
+
+red=$'\e[31m'
+yellow=$'\e[33m'
+end=$'\e[0m'
+
+##############################################################
+# Functions to Download Data
+##############################################################
+function voc2007() {
+    start=`date +%s`
+    echo "Navigating to ~/data/ ..."
+    mkdir -p ~/data
+    cd ~/data/
+
+    echo "Downloading VOC2007 trainval ..."
+    curl -LO http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar
+    echo "Downloading VOC2007 test data ..."
+    curl -LO http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar
+    echo "Done downloading."
+
+    # Extract data
+    echo "Extracting trainval ..."
+    tar -xvf VOCtrainval_06-Nov-2007.tar
+    echo "Extracting test ..."
+    tar -xvf VOCtest_06-Nov-2007.tar
+    echo "removing tars ..."
+    rm VOCtrainval_06-Nov-2007.tar
+    rm VOCtest_06-Nov-2007.tar
+
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "Completed in" $runtime "seconds"
+}
+
+function voc2012() {
+    start=`date +%s`
+    echo "Navigating to ~/data/ ..."
+    mkdir -p ~/data
+    cd ~/data/
+
+    echo "Downloading VOC2012 trainval ..."
+    curl -LO http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
+    echo "Done downloading."
+
+    echo "Extracting trainval ..."
+    tar -xvf VOCtrainval_11-May-2012.tar
+    echo "removing tar ..."
+    rm VOCtrainval_11-May-2012.tar
+
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "Completed in" $runtime "seconds"   
+}
+
+function coco2012() {
+    start=`date +%s`
+
+    echo "Navigating to ~/data/ ..."
+    mkdir -p ~/data
+    cd ~/data/
+    mkdir -p ./coco
+    cd ./coco
+    mkdir -p ./images
+    mkdir -p ./annotations
+
+    # Download the image data.
+    cd ./images
+    echo "Downloading MSCOCO train images ..."
+    curl -LO http://images.cocodataset.org/zips/train2014.zip
+    echo "Downloading MSCOCO val images ..."
+    curl -LO http://images.cocodataset.org/zips/val2014.zip
+    cd ../
+
+    # Download the annotation data.
+    cd ./annotations
+    echo "Downloading MSCOCO train/val annotations ..."
+    curl -LO http://images.cocodataset.org/annotations/annotations_trainval2014.zip
+    echo "Finished downloading. Now extracting ..."
+
+    # Unzip data
+    echo "Extracting train images ..."
+    unzip ../images/train2014.zip -d ../images
+    echo "Extracting val images ..."
+    unzip ../images/val2014.zip -d ../images
+    echo "Extracting annotations ..."
+    unzip ./annotations_trainval2014.zip
+
+    echo "Removing zip files ..."
+    rm ../images/train2014.zip
+    rm ../images/val2014.zip
+    rm ./annotations_trainval2014.zip
+
+    echo "Creating trainval35k dataset..."
+
+    # Download annotations json
+    echo "Downloading trainval35k annotations from S3"
+    curl -LO https://s3.amazonaws.com/amdegroot-datasets/instances_trainval35k.json.zip
+
+    # combine train and val
+    echo "Combining train and val images"
+    mkdir ../images/trainval35k
+    cd ../images/train2014
+    find -maxdepth 1 -name '*.jpg' -exec cp -t ../trainval35k {} + # dir too large for cp
+    cd ../val2014
+    find -maxdepth 1 -name '*.jpg' -exec cp -t ../trainval35k {} +
+
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "Completed in " $runtime " seconds"
+}
+
+function coco2017() {
+    start=`date +%s`
+
+    echo "Navigating to ~/data/ ..."
+    mkdir -p ~/data
+    cd ~/data/
+    mkdir -p ./coco
+    cd ./coco
+    mkdir -p ./images
+    mkdir -p ./annotations
+
+    # Download the image data.
+    cd ./images
+    echo "Downloading MSCOCO train images ..."
+    curl -LO http://images.cocodataset.org/zips/train2017.zip
+    echo "Downloading MSCOCO val images ..."
+    curl -LO http://images.cocodataset.org/zips/val2017.zip
+    cd ../
+
+    # Download the annotation data.
+    cd ./annotations
+    echo "Downloading MSCOCO train/val annotations ..."
+    curl -LO http://images.cocodataset.org/annotations/annotations_trainval2017.zip
+    echo "Finished downloading. Now extracting ..."
+
+    # Unzip data
+    echo "Extracting train images ..."
+    unzip ../images/train2017.zip -d ../images
+    echo "Extracting val images ..."
+    unzip ../images/val2017.zip -d ../images
+    echo "Extracting annotations ..."
+    unzip ./annotations_trainval2017.zip
+
+    echo "Removing zip files ..."
+    rm ../images/train2017.zip
+    rm ../images/val2017.zip
+    rm ./annotations_trainval2017.zip
+    
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "Completed in " $runtime " seconds"
+}
+
+function kitti() {
+    start=`date +%s`
+
+    echo "Navigating to ~/data/ ..."
+    mkdir -p ~/data/kitti/
+    cd ~/data/kitti/
+
+    # downloading grayscale data - odometry
+    while true; do
+        read -p "${red}Do you wish to download the gray scale dataset ~(22 GB) (Y/N)? ${end}" yn
+        case $yn in
+            [Yy]* ) curl -LO https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_gray.zip; 
+                    unzip data_odometry_gray.zip;
+                    rm data_odometry_gray.zip;
+                    break;;
+            [Nn]* ) break;;
+            * ) echo "Please answer Y(y) or N(n).";;
+        esac
+    done
+
+    # downloading color data - odometry
+    while true; do
+        read -p "${red}Do you wish to download the color dataset ~(65 GB)  (Y/N)? ${end}" yn
+        case $yn in
+            [Yy]* ) curl -LO https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_color.zip;
+                    unzip data_odometry_color.zip;
+                    rm data_odometry_color.zip;
+                    break;;
+            [Nn]* ) break;;
+            * ) echo "Please answer Y(y) or N(n).";;
+        esac
+    done
+
+    # downloading velodyne data - odometry
+    while true; do
+        read -p "${red}Do you wish to download the velodyne dataset ~(80 GB)  (Y/N)? ${end}" yn
+        case $yn in
+            [Yy]* ) curl -LO https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_velodyne.zip;
+                    unzip data_odometry_velodyne.zip;
+                    rm data_odometry_velodyne.zip;
+                    break;;
+            [Nn]* ) break;;
+            * ) echo "Please answer Y(y) or N(n).";;
+        esac
+    done
+
+    echo "Downloading calibration files (~ 1 MB)"
+    curl -LO https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_calib.zip
+    unzip data_odometry_calib.zip
+    rm data_odometry_calib.zip
+
+    echo "Downloading ground truth poses (~ 4 MB)"
+    curl -LO https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_poses.zip
+    unzip data_odometry_poses.zip
+    rm data_odometry_poses.zip
+
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "Completed in " $runtime " seconds"
+}
+
+function tum() {
+    start=`date +%s`
+
+    echo "Navigating to ~/data/ ..."
+    mkdir -p ~/data/tum/
+    cd ~/data/tum/
+
+    echo "Downloading fr2/large_no_loop (~ 1.92 GB)"
+    curl -LO https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_large_no_loop.tgz
+    tar zxvf rgbd_dataset_freiburg2_large_no_loop.tgz
+    rm rgbd_dataset_freiburg2_large_no_loop.tgz
+
+    echo "Downloading fr2/large_with_loop (~ 2.83 MB)"
+    curl -LO https://vision.in.tum.de/rgbd/dataset/freiburg2/rgbd_dataset_freiburg2_large_with_loop.tgz
+    tar zxvf rgbd_dataset_freiburg2_large_with_loop.tgz
+    rm rgbd_dataset_freiburg2_large_with_loop.tgz
+
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "Completed in " $runtime " seconds"
+}
+
+##############################################################
+# Main Function
+##############################################################
+MSG="Please use download as follows:
+${yellow}./download voc2007${end}       : downloads the VOC2007 dataset
+${yellow}./download voc2012${end}       : downloads the VOC2012 dataset
+${yellow}./download coco2012${end}      : downloads the COCO2012 dataset
+${yellow}./download coco2017${end}      : downloads the COCO2017 dataset
+${yellow}./download kitti${end}         : downloads the Kitti Odometry dataset
+${yellow}./download tum${end}           : downloads the TUM RGBD dataset (fr2/large_with(out)_loop)
+
+${red}Note: all data is downloaded to ~/data (default) because it is mapped directly with the data directory of the docker container.${end}
+"
+
+if [ "$#" == 1 ]; then
+  if [ "$1" == "voc2007" ]; then
+    voc2007
+  elif [ "$1" == "voc2012" ]; then
+    voc2012
+  elif [ "$1" == "coco2012" ]; then
+    coco2012
+  elif [ "$1" == "coco2017" ]; then
+    coco2017
+  elif [ "$1" == "kitti" ]; then
+    kitti
+  elif [ "$1" == "tum" ]; then
+    tum
+  else
+    echo "$MSG"
+  fi
+else
+  echo  "$MSG"
+fi
