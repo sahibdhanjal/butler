@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
 apt-utils \
 dirmngr \
 curl \
+cmake \
 wget \
 git \
 nano \
@@ -18,7 +19,8 @@ terminator \
 libeigen3-dev \
 libgtest-dev \
 libgoogle-glog-dev \
-libboost-dev
+libboost-dev \
+libyaml-cpp-dev
 
 RUN pip install -U catkin_tools
 
@@ -36,8 +38,7 @@ ros-melodic-desktop-full \
 python-rosdep \
 python-rosinstall \
 python-rosinstall-generator \
-python-wstool \
-cmake
+python-wstool
 
 RUN rosdep init
 RUN rosdep update

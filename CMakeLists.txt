@@ -61,6 +61,8 @@ find_package(
     sensor_msgs
     std_msgs
     tf2
+    urdf
+    xacro
 )
 
 include_directories(
@@ -112,12 +114,7 @@ set(BUTLER_ROS_LIBS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES butler
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
-)
+catkin_package(CATKIN_DEPENDS urdf xacro)
 
 ## Generate Libraries for every component
 # add_library(common SHARED
