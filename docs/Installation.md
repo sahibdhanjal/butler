@@ -17,7 +17,9 @@ git clone https://github.com/sahibdhanjal/butler.git
 . scripts/provision build nvidia
 ```
 
-Run the **ROS container** using `. run ros`, which automatically starts a session in your web browser at [localhost:6080](http://localhost:6080/). You can now use this browser tab as a VNC terminal. Your local folder is directly mapped to the folder in the docker container, so any change you make will automatically reflect there. 
+Run the **ROS container** using `. run ros`, which automatically starts a session in your web browser at [localhost:6080](http://localhost:6080/). You can now use this browser tab as a VNC terminal something as follows:
+![Image](docs/img/localhost.png)
+Your local folder is directly mapped to the folder in the docker container, so any change you make will automatically reflect there. 
 
 Run the **nvidia container** using `. run nvidia`, which opens up a terminal inside the docker itself. An optimized version of cuda and pytorch have been setup inside this environment and it is highly suggested to use the environment inside for any testing, training, inference purposes.
 
