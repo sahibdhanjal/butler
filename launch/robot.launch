@@ -7,19 +7,19 @@
     
     <include file="$(find gazebo_ros)/launch/$(arg world)" if="$(eval arg('gazebo'))"/>
     
-    <group if="$(eval arg('robot')=='kobuki')">
-        <include file="$(find butler)/robots/kobuki_description/launch/view_model.launch">
-            <arg name="gazebo" value="$(arg gazebo)"/>
-            <arg name="rviz" value="$(arg rviz)"/>
-        </include>
-    </group>
+    <include file="$(find butler)/robots/kobuki_description/launch/view_kobuki.launch" if="$(eval arg('robot')=='kobuki')">
+        <arg name="gazebo" value="$(arg gazebo)"/>
+        <arg name="rviz" value="$(arg rviz)"/>
+    </include>
 
-    <group if="$(eval arg('robot')=='aion_r1')">
-        <include file="$(find butler)/robots/aion_r1_description/launch/view_model.launch" />
-    </group>
+    <include file="$(find butler)/robots/aion_r1_description/launch/view_aion_r1.launch" if="$(eval arg('robot')=='aion_r1')">
+        <arg name="gazebo" value="$(arg gazebo)"/>
+        <arg name="rviz" value="$(arg rviz)"/>
+    </include>
 
-    <group if="$(eval arg('robot')=='jackal')">
-        <include file="$(find butler)/robots/jackal_description/launch/view_model.launch" />
-    </group>
+    <include file="$(find butler)/robots/jackal_description/launch/view_model.launch" if="$(eval arg('robot')=='jackal')">
+        <arg name="gazebo" value="$(arg gazebo)"/>
+        <arg name="rviz" value="$(arg rviz)"/>
+    </include>
 
 </launch>
