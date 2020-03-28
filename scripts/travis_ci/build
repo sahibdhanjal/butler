@@ -1,4 +1,5 @@
 cd ..
 mkdir src
 mv butler src
+source /opt/ros/melodic/setup.bash
 catkin_make
