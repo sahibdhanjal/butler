@@ -43,5 +43,5 @@ qtcreator-*
 CATKIN_IGNORE
 
 venv/*
-.vscode/
-.idea/
+*.vscode/
+*.idea/
