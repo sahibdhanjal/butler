@@ -5,9 +5,16 @@
     <arg name="gazebo" default="true" />
     <arg name="rviz" default="true" />
 
+    <include file="$(find ur_description)/robots/jackal_description/launch/view_jackal.launch">
+        <arg name="robot" value="$(arg robot)"/>
+        <arg name="world" value="$(arg world)"/>
+        <arg name="gazebo" value="$(arg gazebo)"/>
+        <arg name="rviz" value="$(arg rviz)"/>
+    </include>
+
     <launch>
         <!--ur10 parameters files -->
-        <arg name="jackal_laser_params" default="$(find robots)/jackal_description/urdf/configs/config_jackal.yaml"/>
+        <arg name="jackal_laser_params" default="$(find butler)/robots/configs/jackal/config_jackal.yaml"/>
         <!--arg name="physical_params" default="$(find robots)/configs/aion_r1/physical_parameters.yaml"/-->
         <!--arg name="visual_params" default="$(find robots)/configs/kobuki/visual_parameters.yaml"/-->
   
