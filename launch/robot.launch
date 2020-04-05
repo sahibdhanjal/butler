@@ -5,13 +5,6 @@
     <arg name="gazebo" default="true" />
     <arg name="rviz" default="true" />
 
-    <include file="$(find butler)/robots/jackal_description/launch/view_jackal.launch">
-        <arg name="robot" value="$(arg robot)"/>
-        <arg name="world" value="$(arg world)"/>
-        <arg name="gazebo" value="$(arg gazebo)"/>
-        <arg name="rviz" value="$(arg rviz)"/>
-    </include>
-
     <launch>
         <!--ur10 parameters files -->
         <arg name="jackal_laser_params" default="$(find butler)/robots/configs/jackal/config_jackal.yaml"/>
