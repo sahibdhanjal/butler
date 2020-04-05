@@ -5,7 +5,7 @@
     <arg name="gazebo" default="true" />
     <arg name="rviz" default="true" />
 
-    <include file="$(find ur_description)/robots/jackal_description/launch/view_jackal.launch">
+    <include file="$(find butler)/robots/jackal_description/launch/view_jackal.launch">
         <arg name="robot" value="$(arg robot)"/>
         <arg name="world" value="$(arg world)"/>
         <arg name="gazebo" value="$(arg gazebo)"/>
