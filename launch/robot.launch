@@ -1,6 +1,6 @@
 <!-- Useful for debugging or just viewing the kobuki model/urdf/transform. -->
 <launch>
-    <arg name="robot" default="kobuki"/>
+    <arg name="robot" default="jackal"/>
     <arg name="world" default="empty_world.launch"/>
     <arg name="gazebo" default="true" />
     <arg name="rviz" default="true" />
