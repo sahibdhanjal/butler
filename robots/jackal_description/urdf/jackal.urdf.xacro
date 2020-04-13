@@ -256,6 +256,7 @@
   <!-- Optional standard accessories, including their simulation data. The rendering
        of these into the final description is controlled by optenv variables, which
        default each one to off.-->
+  <xacro:arg name="jackal_laser_params" default=""/>
   <xacro:include filename="$(find butler)/robots/jackal_description/urdf/accessories.urdf.xacro" />
 
   <xacro:read_model_data prefix="" config_jackal_file="${load_yaml('$(arg jackal_laser_params)')}"/>
