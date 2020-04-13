@@ -40,11 +40,11 @@
   <xacro:include filename="$(find butler)/robots/jackal_description/urdf/accessories/bridge_plate.urdf.xacro" />
 
   <!-- If enabled, generate the LASER payload (by default, a SICK LMS111). -->
-  <xacro:if value="$(jackal_laser == 0)">
-    <xacro:if value="$(jackal_laser_hokuyo == 0)">
+  <xacro:if value="${jackal_laser == 0}">
+    <xacro:if value="${jackal_laser_hokuyo == 0}">
       <xacro:include filename="$(find butler)/robots/jackal_description/urdf/accessories/hokuyo_ust10.urdf.xacro" />
-      <hokuyo_ust10_mount prefix="$(jackal_laser_mount)"
-                          topic="$(jackal_laser_topic)" />
+      <hokuyo_ust10_mount prefix="${jackal_laser_mount}"
+                          topic="${jackal_laser_topic}" />
 
       <joint name="$(jackal_laser_mount)_laser_mount_joint" type="fixed">
         <origin xyz="$(jackal_laser_offset)"
