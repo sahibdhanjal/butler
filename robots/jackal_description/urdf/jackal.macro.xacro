@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:macro name="read_model_data" params="config_jackal_file">
+    <xacro:property name="__LASER" value="${config_jackal_file['LASER']}"/>
+    <xacro:property name="__NAVSAT" value="${config_jackal_file['NAVSAT']}"/>
+    <xacro:property name="__FENDER" value="${config_jackal_file['FENDER']}"/>
+
+    <xacro:property name="jackal_laser" value="${__LASER['JACKAL_LASER']}" scope="parent"/>
+    <xacro:property name="jackal_laser_hokuyo" value="${__LASER['JACKAL_LASER_HOKUYO']}" scope="parent"/>
+    <xacro:property name="jackal_laser_mount" value="${__LASER['JACKAL_LASER_MOUNT']}" scope="parent"/>
+    <xacro:property name="jackal_laser_topic" value="${__LASER['JACKAL_LASER_TOPIC']}" scope="parent"/>
+    <xacro:property name="jackal_laser_offset" value="${__LASER['JACKAL_LASER_OFFSET']}" scope="parent"/>
+    <xacro:property name="jackal_laser_rpy" value="${__LASER['JACKAL_LASER_RPY']}" scope="parent"/>
+
+    <xacro:property name="jackal_navsat" value="${__NAVSAT['JACKAL_NAVSAT']}" scope="parent"/>
+    <xacro:property name="jackal_navsat_mount" value="${__NAVSAT['JACKAL_NAVSAT_MOUNT']}" scope="parent"/>
+    <xacro:property name="jackal_navsat_height" value="${__NAVSAT['JACKAL_NAVSAT_HEIGHT']}" scope="parent"/>
+
+    <xacro:property name="jackal_front_accessory_fender" value="${__FENDER['JACKAL_FRONT_ACCESSORY_FENDER']}" scope="parent"/>
+    <xacro:property name="jackal_rear_accessory_fender" value="${__FENDER['JACKAL_REAR_ACCESSORY_FENDER']}" scope="parent"/>
+    <xacro:property name="jackal_front_fender_ust10" value="${__FENDER['JACKAL_FRONT_FENDER_UST10']}" scope="parent"/>
+    <xacro:property name="jackal_rear_fender_ust10" value="${__FENDER['JACKAL_REAR_FENDER_UST10']}" scope="parent"/>
+    <xacro:property name="__JACKAL_ARK_ENCLOSURE" value="${__FENDER['JACKAL_ARK_ENCLOSURE']}" scope="parent"/>
+  </xacro:macro>
+</robot>

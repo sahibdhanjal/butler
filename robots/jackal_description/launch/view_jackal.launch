@@ -5,7 +5,7 @@
 
   <arg name="jackal_laser_params" default="$(find butler)/robots/configs/jackal/config_jackal.yaml"/>
 
-  <param name="robot_description" command="$(find xacro)/xacro '$(find butler)/robots/jackal_description/urdf/jackal.urdf.xacro' jackal_laser_params:=$(arg jackal_laser_params)"/> 
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find butler)/robots/jackal_description/urdf/jackal.urdf.xacro' jackal_laser_params:=$(arg jackal_laser_params)"/> 
   
   <param name="robot_description" command="$(arg urdf)" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
