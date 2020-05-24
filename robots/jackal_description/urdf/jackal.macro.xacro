@@ -5,6 +5,7 @@
     <xacro:property name="__NAVSAT" value="${config_jackal_file['NAVSAT']}"/>
     <xacro:property name="__FENDER" value="${config_jackal_file['FENDER']}"/>
     <xacro:property name="__FLEA3" value="${config_jackal_file['FLEA3']}"/>
+    <xacro:property name="__LIDAR" value="${config_jackal_file['LIDAR']}"/>
 
     <xacro:property name="jackal_laser" value="${__LASER['JACKAL_LASER']}" scope="parent"/>
     <xacro:property name="jackal_laser_hokuyo" value="${__LASER['JACKAL_LASER_HOKUYO']}" scope="parent"/>
@@ -29,5 +30,7 @@
     <xacro:property name="jackal_flea3_offset" value="${__FLEA3['JACKAL_FLEA3_OFFSET']}" scope="parent"/>
     <xacro:property name="jackal_flea3_rpy" value="${__FLEA3['JACKAL_FLEA3_RPY']}" scope="parent"/>
     <xacro:property name="jackal_flea3_name" value="${__FLEA3['JACKAL_FLEA3_NAME']}" scope="parent"/>
+
+    <xacro:property name="jackal_lidar" value="${__LIDAR['JACKAL_LIDAR']}" scope="parent"/>
   </xacro:macro>
 </robot>

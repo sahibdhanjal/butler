@@ -261,6 +261,8 @@
 
   <xacro:include filename="$(find butler)/robots/jackal_description/urdf/accessories.urdf.xacro" />
 
+
+
   <xacro:jackal prefix="" config_jackal_file="${load_yaml('$(arg jackal_laser_params)')}"/>
 
   <!-- Optional custom includes. -->

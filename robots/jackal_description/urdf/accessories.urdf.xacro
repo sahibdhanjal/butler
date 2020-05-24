@@ -65,6 +65,32 @@
     </joint>
   </xacro:if>
 
+  <!-- LiDAR integration parameters -->
+  <xacro:if value="${jackal_lidar == 1}">
+    <xacro:include filename="$(find butler)/robots/jackal_description/urdf/accessories/VLP-16.urdf.xacro"/>
+    <VLP-16 parent="front_mount" name="velodyne" topic="/velodyne_points">
+      <origin xyz="0 0 0.052" rpy="0 0 0" />
+    </VLP-16>
+
+    <link name="velodyne_mount">
+      <visual>
+        <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+        <geometry>
+          <mesh filename="package://butler/robots/jackal_description/meshes/velodyne_mount.stl"/>
+        </geometry>
+        <material name="aluminum" >
+          <color rgba="0.45 0.45 0.45 1"/>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="velodyne_mount_joint" type="fixed">
+      <parent link="velodyne_base_link" />
+      <child link="velodyne_mount" />
+      <origin xyz="0 0 0" />
+    </joint>
+  </xacro:if>  
+
   <!-- Common camera mounts and accessory URDFs. -->
   <xacro:include filename="$(find butler)/robots/jackal_description/urdf/accessories/camera_mount.urdf.xacro" />
   <xacro:include filename="$(find pointgrey_camera_description)/urdf/pointgrey_flea3.urdf.xacro" />
