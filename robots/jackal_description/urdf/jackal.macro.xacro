@@ -4,6 +4,7 @@
     <xacro:property name="__LASER" value="${config_jackal_file['LASER']}"/>
     <xacro:property name="__NAVSAT" value="${config_jackal_file['NAVSAT']}"/>
     <xacro:property name="__FENDER" value="${config_jackal_file['FENDER']}"/>
+    <xacro:property name="__FLEA3" value="${config_jackal_file['FLEA3']}"/>
 
     <xacro:property name="jackal_laser" value="${__LASER['JACKAL_LASER']}" scope="parent"/>
     <xacro:property name="jackal_laser_hokuyo" value="${__LASER['JACKAL_LASER_HOKUYO']}" scope="parent"/>
@@ -21,5 +22,12 @@
     <xacro:property name="jackal_front_fender_ust10" value="${__FENDER['JACKAL_FRONT_FENDER_UST10']}" scope="parent"/>
     <xacro:property name="jackal_rear_fender_ust10" value="${__FENDER['JACKAL_REAR_FENDER_UST10']}" scope="parent"/>
     <xacro:property name="__JACKAL_ARK_ENCLOSURE" value="${__FENDER['JACKAL_ARK_ENCLOSURE']}" scope="parent"/>
+
+    <xacro:property name="jackal_flea3" value="${__FLEA3['JACKAL_FLEA3']}" scope="parent"/>
+    <xacro:property name="jackal_flea3_mount" value="${__FLEA3['JACKAL_FLEA3_MOUNT']}" scope="parent"/>
+    <xacro:property name="jackal_flea3_tilt" value="${__FLEA3['JACKAL_FLEA3_TILT']}" scope="parent"/>
+    <xacro:property name="jackal_flea3_offset" value="${__FLEA3['JACKAL_FLEA3_OFFSET']}" scope="parent"/>
+    <xacro:property name="jackal_flea3_rpy" value="${__FLEA3['JACKAL_FLEA3_RPY']}" scope="parent"/>
+    <xacro:property name="jackal_flea3_name" value="${__FLEA3['JACKAL_FLEA3_NAME']}" scope="parent"/>
   </xacro:macro>
 </robot>
