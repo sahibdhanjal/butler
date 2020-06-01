@@ -32,13 +32,13 @@ class _HomePage extends State<HomePage> {
 
     final padding = 5.0;
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: darkGrey,
       body: Row(
         children: <Widget>[
           NavigationRail(
             minWidth: 30.0,
             groupAlignment: 1.0,
-            backgroundColor: railBackground,
+            backgroundColor: black,
             selectedIndex: _selectedIndex,
             onDestinationSelected: (int index) {
               setState(() {
@@ -65,22 +65,22 @@ class _HomePage extends State<HomePage> {
                   quarterTurns: 1,
                   child: IconButton(
                     icon: Icon(Icons.tune),
-                    color: activeLink,
+                    color: primaryDark,
                     onPressed: () {},
                   ),
                 )
               ],
             ),
             selectedLabelTextStyle: TextStyle(
-              color: activeLink,
+              color: primaryDark,
               fontSize: 13,
               letterSpacing: 0.8,
-              decoration: TextDecoration.underline,
               decorationThickness: 2.0,
             ),
             unselectedLabelTextStyle: TextStyle(
               fontSize: 13,
               letterSpacing: 0.8,
+              color: primaryLight,
             ),
             destinations: [
               for (var i in menuOptions)
@@ -139,12 +139,12 @@ class ContentSpace extends StatelessWidget {
                 children: <Widget>[
                   IconButton(
                     icon: Icon(Icons.search),
-                    color: inactiveLink,
+                    color: primaryLight,
                     onPressed: () {},
                   ),
                   IconButton(
                     icon: Icon(Icons.calendar_today),
-                    color: inactiveLink,
+                    color: primaryLight,
                     onPressed: () {},
                   ),
                 ],

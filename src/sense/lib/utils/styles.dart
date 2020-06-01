@@ -1,16 +1,13 @@
 // Refer - https://stackoverflow.com/questions/52326268/how-to-create-a-round-checkbox-in-flutter-or-change-the-checkboxs-style-suc
 import 'package:flutter/material.dart';
 
-Color background = Color(0xff28292E);
-Color railBackground = Color(0xff2D3035);
-Color inactiveLink = Colors.white30;
-Color activeLink = Color(0xffFCCFA8);
-
-Color backgroundIP = Color.fromRGBO(2, 89, 255, 1);
-Color sensorBoxBackground = Color.fromRGBO(25, 32, 76, 1);
-Color checkboxActive = Color.fromRGBO(11, 224, 187, 1);
-Color checkboxInactive = Color.fromRGBO(255, 255, 255, 1);
-Color graphBox = Color.fromRGBO(37, 43, 85, 1);
+Color black = Color(0xff0c0c0c);
+Color white = Color(0xffffffff);
+Color darkGrey = Color(0xff101010);
+Color lightGrey = Color(0xff4e586e);
+Color secondary = Color(0xffffd428);
+Color primaryDark = Color(0xfff54b64);
+Color primaryLight = Color(0xfff78361);
 
 String logoPath = "assets/img/logo.png";
 
@@ -27,7 +24,7 @@ class SensorText extends StatelessWidget {
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width * 0.43,
-            color: graphBox,
+            color: primaryDark,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(

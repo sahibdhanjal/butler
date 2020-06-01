@@ -39,7 +39,7 @@ class _AppState extends State<Sense> {
           size: 200,
         ),
       ),
-      backgroundColor: background,
+      backgroundColor: black,
     );
   }
 }
