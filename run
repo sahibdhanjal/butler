@@ -2,6 +2,8 @@
 set -o errexit
 set -o errtrace
 
+red=$'\e[31m'
+green=$'\e[32m'
 yellow=$'\e[33m'
 blue=$'\e[34m'
 end=$'\e[0m'
@@ -19,29 +21,38 @@ function docker_nvidia() {
 }
 
 function docker_ros() {
+  if [ "$#" -eq 1 ]; then
+    BROWSER_PORT=6080
+    VNC_PORT=5900
+  elif [ "$#" -eq 2 ]; then
+    BROWSER_PORT=$2
+    VNC_PORT=5900
+  else
+    BROWSER_PORT=$2
+    VNC_PORT=$3
+  fi
+
+  echo "Launching Browser Client on ${green} $BROWSER_PORT ${end}"
+  echo "Launching VNC Client on ${green} $VNC_PORT ${end}"
   WORK_DIR=/home/ubuntu/workspace/src/butler
   DATA_DIR=/home/data
   sudo docker run --rm \
-  -p 6080:80 \
-  -e RESOLUTION=1920x1080 \
+  -p $BROWSER_PORT:80 \
+  -p $VNC_PORT:5900 \
   -v $PWD:$WORK_DIR \
   -v ~/data:$DATA_DIR \
   --workdir $WORK_DIR -it butler-ros:latest
 }
 
 MSG="Please use run as follows:
-${yellow}./run nvidia${end}   : run the deep learning ready container
-${yellow}./run ros${end}      : run the ROS/Gazebo ready container
+${yellow}./run nvidia${end}                                               : run the deep learning ready container
+${yellow}./run ros <optional_browser_port> <optional_VNC_port>${end}      : run the ROS/Gazebo ready container
 "
 
-if [ "$#" == 1 ]; then
-  if [ "$1" == "nvidia" ]; then
-    docker_nvidia
-  elif [ "$1" == "ros" ]; then
-    docker_ros
-  else
-    echo "$MSG"
-  fi
+if [ "$1" == "nvidia" ]; then
+  docker_nvidia
+elif [ "$1" == "ros" ]; then
+  docker_ros "$@"
 else
   echo "$MSG"
 fi
