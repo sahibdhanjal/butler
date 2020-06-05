@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sense/utils/styles.dart';
-import 'package:sense/utils/home.dart';
+import 'package:sense/pages/home.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -22,9 +22,7 @@ class _AppState extends State<Sense> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(
-              title: "sense",
-            ),
+            builder: (context) => HomePage(),
           ),
         );
       },

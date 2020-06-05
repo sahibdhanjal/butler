@@ -5,9 +5,9 @@ class Sensor {
   final String name;
   final String iconLocation;
   final String sensorPage;
-  
+
   Sensor(this.name, this.iconLocation, this.sensorPage);
-  
+
   static List<Sensor> getAllSensors() {
     List<Sensor> sensors = <Sensor>[];
     sensors.add(Sensor("Accelerometer", "Accelerometer", "Accelerometer"));

@@ -1,13 +1,13 @@
 // Refer - https://stackoverflow.com/questions/52326268/how-to-create-a-round-checkbox-in-flutter-or-change-the-checkboxs-style-suc
 import 'package:flutter/material.dart';
 
-Color black = Color(0xff0c0c0c);
-Color white = Color(0xffffffff);
-Color darkGrey = Color(0xff101010);
-Color lightGrey = Color(0xff4e586e);
-Color secondary = Color(0xffffd428);
-Color primaryDark = Color(0xfff54b64);
-Color primaryLight = Color(0xfff78361);
+const Color black = Color(0xff0c0c0c);
+const Color white = Color(0xffffffff);
+const Color darkGrey = Color(0xff101010);
+const Color lightGrey = Color(0xff4e586e);
+const Color secondary = Color(0xffffd428);
+const Color primaryDark = Color(0xfff54b64);
+const Color primaryLight = Color(0xfff78361);
 
 String logoPath = "assets/img/logo.png";
 
