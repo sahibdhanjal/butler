@@ -21,7 +21,7 @@ Run the **ROS container** using `. run ros`, which automatically starts a sessio
 
 ![Image](img/localhost.png)
 
-Your local folder is directly mapped to the folder in the docker container, so any change you make will automatically reflect there. 
+Your local folder is directly mapped to the folder in the docker container, so any change you make will automatically reflect there. You can also optionally view the same using a VNC Client at [localhost:5900](http://localhost:5900/). These ports can also be changed by providing them when running the command as `. run ros <browser_port> <vnc_port>`. For example, launching `. run ros 10001 5902` launches the browser client at [localhost:10001](http://localhost:10001/) and the VNC client at [localhost:5902](http://localhost:5902/). Note that you cannot view the vnc port in the browser and vice-versa
 
 Run the **nvidia container** using `. run nvidia`, which opens up a terminal inside the docker itself. An optimized version of cuda and pytorch have been setup inside this environment and it is highly suggested to use the environment inside for any testing, training, inference purposes.
 
