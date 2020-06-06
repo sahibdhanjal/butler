@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'package:sense/utils/styles.dart';
+import 'package:sense/utils/definitions.dart';
+
 import 'package:sense/pages/sensors.dart';
-
-List<String> menuOptions = ["Sensors", "Settings", "Contribute"];
-
-class Destination {
-  const Destination(this.index, this.title, this.icon, this.color);
-
-  final int index;
-  final String title;
-  final IconData icon;
-  final Color color;
-}
-
-const List<Destination> destinationList = <Destination>[
-  Destination(0, 'Sensors', Icons.all_inclusive, darkGrey),
-  Destination(1, 'Settings', Icons.tune, darkGrey),
-  Destination(2, 'Contribute', Icons.code, darkGrey)
-];
 
 /////////////////////////////////////////////
 // Home Page Class
@@ -36,10 +22,6 @@ class _HomePage extends State<HomePage>
   List<AnimationController> _faders;
   AnimationController _hide;
   int _currIdx = 0;
-
-  final sensors = Sensor.getAllSensors();
-
-  final widgetOptions = [Text('Sensors'), Text('Settings'), Text('Contribute')];
 
   @override
   void initState() {
@@ -121,9 +103,9 @@ class _HomePage extends State<HomePage>
             sizeFactor: _hide,
             axisAlignment: -1.0,
             child: BottomNavigationBar(
-              backgroundColor: black,
-              selectedItemColor: secondary,
-              unselectedItemColor: primaryDark,
+              backgroundColor: grey80,
+              selectedItemColor: primaryMid,
+              unselectedItemColor: grey60,
               currentIndex: _currIdx,
               onTap: (int index) {
                 setState(() {
@@ -147,7 +129,7 @@ class _HomePage extends State<HomePage>
 // Destination Page Class
 /////////////////////////////////////////////
 class DestinationPage extends StatefulWidget {
-  const DestinationPage({Key key, this.destination, this.onNavigation})
+  DestinationPage({Key key, this.destination, this.onNavigation})
       : super(key: key);
   final Destination destination;
   final VoidCallback onNavigation;
@@ -194,70 +176,5 @@ class ViewObserver extends NavigatorObserver {
 
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     onNavigation();
-  }
-}
-
-/////////////////////////////////////////////
-// Sensor List Page Class
-/////////////////////////////////////////////
-class ListPage extends StatelessWidget {
-  const ListPage({Key key, this.destination}) : super(key: key);
-
-  final Destination destination;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(destination.title),
-        backgroundColor: destination.color,
-      ),
-      backgroundColor: destination.color,
-      body: SizedBox.expand(
-        child: ListView.builder(
-          itemCount: 5,
-          itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 128,
-              child: Card(
-                color: destination.color.withOpacity(0.25),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/");
-                  },
-                  child: Center(
-                    child: Text('Item $index',
-                        style: Theme.of(context).primaryTextTheme.display1),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-/////////////////////////////////////////////
-// Sensor Page Class
-/////////////////////////////////////////////
-class SensorPage extends StatelessWidget {
-  const SensorPage({Key key, this.destination}) : super(key: key);
-
-  final Destination destination;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(destination.title),
-        backgroundColor: destination.color,
-      ),
-      backgroundColor: destination.color,
-      body: SizedBox.expand(
-        child: Text('Sensor'),
-      ),
-    );
   }
 }
