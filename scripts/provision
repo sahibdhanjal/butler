@@ -72,7 +72,7 @@ function install_nvidia_driver() {
 }
 
 # Check if opencv is present. If not, install
-function install_opencv() {
+function manual_install_opencv() {
   OPENCV_VERSION='4.1.2'
 
   cd /tmp/
@@ -112,6 +112,11 @@ function install_opencv() {
   make -j8
   sudo make install
   sudo ldconfig
+}
+
+# install openCV from apt-get 
+function install_opencv() {
+  sudo apt-get install -y libopencv-dev libopencv-dnn-dev
 }
 
 # Check if nvidia docker is already present, else installs
