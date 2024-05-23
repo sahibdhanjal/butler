@@ -2,7 +2,6 @@ devel/
 logs/
 build/
 bin/
-lib/
 msg_gen/
 srv_gen/
 build_isolated/
@@ -43,5 +42,5 @@ qtcreator-*
 CATKIN_IGNORE
 
 venv/*
-.vscode/
-.idea/
+*.vscode/
+*.idea/
