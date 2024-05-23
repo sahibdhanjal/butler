@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <!--ur10 parameters files -->
+  <arg name="jackal_laser_params" default="$(find robots)/jackal_description/urdf/configs/config_jackal.yaml"/>
+  <!--arg name="physical_params" default="$(find robots)/configs/aion_r1/physical_parameters.yaml"/-->
+  <!--arg name="visual_params" default="$(find robots)/configs/kobuki/visual_parameters.yaml"/-->
+  
+
+</launch> 

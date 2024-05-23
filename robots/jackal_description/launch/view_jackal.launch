@@ -3,7 +3,11 @@
   <arg name="rviz" default="false" />
   <arg name="urdf" default="$(find xacro)/xacro --inorder '$(find butler)/robots/jackal_description/urdf/jackal.urdf.xacro'"/>
 
-  <param name="robot_description" command="$(arg urdf)" />
+  <arg name="jackal_laser_params" default="$(find butler)/robots/configs/jackal/config_jackal.yaml"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find butler)/robots/jackal_description/urdf/jackal.urdf.xacro' jackal_laser_params:=$(arg jackal_laser_params)"/> 
+  
+  <!-- <param name="robot_description" command="$(arg urdf)" /> -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     <param name="publish_frequency" type="double" value="5.0"/>
   </node> 
@@ -19,5 +23,6 @@
         args="-x 0.0 -y 0.0 -z 1.5 -unpause -urdf -param robot_description -model jackal" 
         respawn="false" 
         if="$(eval arg('gazebo'))"/>
+
 
 </launch>

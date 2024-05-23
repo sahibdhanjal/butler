@@ -57,7 +57,10 @@ RUN /bin/bash -c "cd /usr/src/gtest && \
 # Install ROS plugins/packages
 RUN apt-get install -f -y \
 ros-melodic-hector-* \
-ros-melodic-velodyne
+ros-melodic-velodyne \
+ros-melodic-velodyne-description \
+ros-melodic-velodyne-gazebo-plugins \
+ros-melodic-pointgrey-camera-*
 
 # Set up bashrc and workspace
 RUN /bin/bash -c "echo 'source /opt/ros/melodic/setup.bash' >> /root/.bashrc && \
